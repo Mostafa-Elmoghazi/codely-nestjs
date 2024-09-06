@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "src",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "webpack": true,
+    "assets": [
+      { "include": "i18n/**/*", "watchAssets": true },
+      { "include": "mail-templates/*", "watchAssets": true }
+    ]
+  },
+  "projects": {
+    "codely.business": {
+      "type": "library",
+      "root": "libs/codely.business",
+      "entryFile": "index",
+      "sourceRoot": "libs/codely.business/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/codely.business/tsconfig.lib.json"
+      }
+    },
+    "codely.data": {
+      "type": "library",
+      "root": "libs/codely.data",
+      "entryFile": "index",
+      "sourceRoot": "libs/codely.data/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/codely.data/tsconfig.lib.json"
+      }
+    },
+    "codely.entities": {
+      "type": "library",
+      "root": "libs/codely.entities",
+      "entryFile": "index",
+      "sourceRoot": "libs/codely.entities/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/codely.entities/tsconfig.lib.json"
+      }
+    },
+    "core": {
+      "type": "library",
+      "root": "libs/core",
+      "entryFile": "index",
+      "sourceRoot": "libs/core/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/core/tsconfig.lib.json"
+      }
+    }
+  }
+}

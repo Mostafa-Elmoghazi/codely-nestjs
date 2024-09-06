@@ -1,0 +1,4 @@
+{
+  "isNotEmpty": "This field is required.",
+  "isEmail": "Please provide a valid email address."
+}

@@ -1,0 +1,20 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": ".",
+  "testEnvironment": "node",
+  "testRegex": ".e2e-spec.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "moduleNameMapper": {
+    "codely/codely.business/(.*)": "<rootDir>/../libs/codely.business/src/$1",
+    "codely/codely.business": "<rootDir>/../libs/codely.business/src",
+    "codely/codely.data/(.*)": "<rootDir>/../libs/codely.data/src/$1",
+    "codely/codely.data": "<rootDir>/../libs/codely.data/src",
+    "codely/codely.entities/(.*)": "<rootDir>/../libs/codely.entities/src/$1",
+    "codely/codely.entities": "<rootDir>/../libs/codely.entities/src",
+    "@app/core/(.*)": "<rootDir>/../libs/core/src/$1",
+    "@app/core": "<rootDir>/../libs/core/src"
+  },
+  "watch": false
+}
