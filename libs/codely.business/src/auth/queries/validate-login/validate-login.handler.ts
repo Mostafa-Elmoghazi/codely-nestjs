@@ -1,11 +1,15 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { UserRepository } from 'codely/codely.data';
-import { HttpStatus, Injectable, UnprocessableEntityException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  HttpStatus,
+  Injectable,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
 import { ValidateLoginQuery } from './validate-login.query';
 import { LoginResponseDto } from 'codely/codely.entities/dtos';
-import { AuthProvidersEnum } from 'codely/codely.entities/enums';
-import ms from 'ms';
+import { AuthProvidersEnum, StatusEnum } from 'codely/codely.entities/enums';
 import * as crypto from 'crypto';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
@@ -19,7 +23,7 @@ export class ValidateLoginQueryHandler
   constructor(
     private readonly userRepository: UserRepository,
     private configService: Configuration,
-    private jwtService: JwtService
+    private jwtService: JwtService,
   ) {}
 
   async execute(query: ValidateLoginQuery): Promise<LoginResponseDto | null> {
@@ -32,8 +36,12 @@ export class ValidateLoginQueryHandler
         },
       });
     }
-
-    if (user.provider !== AuthProvidersEnum.email) {
+    if (user.statusId == StatusEnum.notVerified) {
+      throw new ForbiddenException({
+        error: 'notVerified',
+      });
+    }
+    if (user.provider !== AuthProvidersEnum.email.toString()) {
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
         errors: {
@@ -67,11 +75,6 @@ export class ValidateLoginQueryHandler
       .update(randomStringGenerator())
       .digest('hex');
 
-    // const session = await this.sessionService.create({
-    //   user,
-    //   hash,
-    // });
-
     const { token, refreshToken, tokenExpires } = await this.getTokensData({
       id: user.id,
       role: 'user',
@@ -85,24 +88,26 @@ export class ValidateLoginQueryHandler
       user,
     };
   }
-  
+
   private async getTokensData(data: {
     id: string;
     role: string;
     hash: string;
   }) {
-    const tokenExpiresIn = parseInt(this.configService.auth().AUTH_JWT_TOKEN_EXPIRES_IN);
+    const tokenExpiresIn = parseInt(
+      this.configService.auth().AUTH_JWT_TOKEN_EXPIRES_IN,
+    );
     const tokenExpires = Date.now() + tokenExpiresIn * 60 * 1000;
 
     const [token, refreshToken] = await Promise.all([
       await this.jwtService.signAsync(
         {
           id: data.id,
-          role: data.role
+          role: data.role,
         },
         {
           secret: this.configService.auth().AUTH_JWT_SECRET,
-          expiresIn: tokenExpiresIn,
+          expiresIn: tokenExpires,
         },
       ),
       await this.jwtService.signAsync(

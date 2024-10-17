@@ -1,5 +1,9 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { HttpStatus, Injectable, UnprocessableEntityException } from '@nestjs/common';
+import {
+  HttpStatus,
+  Injectable,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { OAuth2Client } from 'google-auth-library';
 import { Configuration } from 'codely/codely.business/common';
 import { GetGoogleLoginQuery } from './get-google-profile.query';
@@ -22,7 +26,7 @@ export class GetGoogleLoginQueryQueryHandler
   async execute(query: GetGoogleLoginQuery): Promise<SocialInterface | null> {
     const ticket = await this.google.verifyIdToken({
       idToken: query.idToken,
-      audience: [this.configService.google().GOOGLE_CLIENT_ID]
+      audience: [this.configService.google().GOOGLE_CLIENT_ID],
     });
 
     const data = ticket.getPayload();

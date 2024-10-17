@@ -13,17 +13,33 @@ import { UserCreatedEventHandler } from './event-handlers';
 import { Subject, takeUntil } from 'rxjs';
 import { CoreModule } from '@app/core';
 import { IFirebaseEvent } from 'codely/codely.entities/events';
-import { RegisterUserCommandHandler } from './auth/commands';
+import {
+  ConfirmEmailCommandHandler,
+  ForgotPasswordCommandHandler,
+  RegisterUserCommandHandler,
+  ResetPasswordCommandHandler,
+  UpdateUserProfileCommandHandler,
+} from './auth/commands';
 import { JwtService } from '@nestjs/jwt';
 import { AuthMailService } from './common/mails';
 import { Configuration } from './common/config/configuration';
-import { ValidateLoginQueryHandler } from './auth/queries';
+import {
+  GetUserProfileQueryHandler,
+  ValidateLoginQueryHandler,
+} from './auth/queries';
+import { UploadFileCommandHandler } from './files/commands';
 
 export const QueryHandlers = [
-  ValidateLoginQueryHandler
+  ValidateLoginQueryHandler,
+  GetUserProfileQueryHandler,
 ];
 export const CommandHandlers = [
-  RegisterUserCommandHandler
+  RegisterUserCommandHandler,
+  ConfirmEmailCommandHandler,
+  ForgotPasswordCommandHandler,
+  ResetPasswordCommandHandler,
+  UpdateUserProfileCommandHandler,
+  UploadFileCommandHandler,
 ];
 export const EventHandlers = [UserCreatedEventHandler];
 

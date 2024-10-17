@@ -1,6 +1,11 @@
 import { Module } from '@nestjs/common';
 import { CodelyBusinessModule } from 'codely/codely.business/codely.business.module';
-import { HeaderResolver, I18nModule, I18nService, I18nValidationExceptionFilter } from 'nestjs-i18n';
+import {
+  HeaderResolver,
+  I18nModule,
+  I18nService,
+  I18nValidationExceptionFilter,
+} from 'nestjs-i18n';
 import * as path from 'path';
 import { APP_FILTER } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -8,12 +13,20 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { JwtStrategy } from './auth/strategies/jwt.strategy';
 import { JwtRefreshStrategy } from './auth/strategies/jwt-refresh.strategy';
 import { AnonymousStrategy } from './auth/strategies/anonymous.strategy';
-import { AuthController, UserController } from './api/controllers';
+import {
+  AuthController,
+  FilesController,
+  UserController,
+} from './api/controllers';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
 
-const controllers = [UserController, AuthController];
+const controllers = [UserController, AuthController, FilesController];
 
 @Module({
   imports: [
+    PassportModule,
+    JwtModule.register({}),
     CodelyBusinessModule,
     // TypeOrmModule.forRootAsync({
     //   useClass: TypeOrmConfigService,
@@ -26,12 +39,10 @@ const controllers = [UserController, AuthController];
         fallbackLanguage: 'en',
         loaderOptions: { path: path.join(__dirname, '/i18n/'), watch: true },
       }),
-      resolvers: [
-        new HeaderResolver (['language']),
-      ],
+      resolvers: [new HeaderResolver(['language'])],
       imports: [],
-      inject: []
-    })
+      inject: [],
+    }),
   ],
   controllers: [...controllers],
   providers: [
@@ -42,8 +53,7 @@ const controllers = [UserController, AuthController];
     },
     JwtStrategy,
     JwtRefreshStrategy,
-    AnonymousStrategy
+    AnonymousStrategy,
   ],
 })
-export class AppModule {
-}
+export class AppModule {}

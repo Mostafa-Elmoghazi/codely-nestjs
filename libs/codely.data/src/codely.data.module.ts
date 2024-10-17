@@ -5,6 +5,8 @@ import {
   User,
   QuizSchema,
   QuizSchemaFactory,
+  UserSchemaFactory,
+  UserSchema,
 } from 'codely/codely.entities/data-models';
 import { MongooseModule } from '@nestjs/mongoose';
 import { QuizRepository } from './repositories/quiz.repository';
@@ -49,10 +51,10 @@ const repositories = [UserRepository, QuizRepository];
     TypeOrmModule.forFeature([User]),
     MongooseModule.forFeature([
       { name: QuizSchema.name, schema: QuizSchemaFactory },
+      { name: UserSchema.name, schema: UserSchemaFactory },
     ]),
   ],
   providers: [...repositories],
   exports: [...repositories],
 })
-export class CodelyDataModule {
-}
+export class CodelyDataModule {}

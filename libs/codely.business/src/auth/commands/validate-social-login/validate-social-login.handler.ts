@@ -1,7 +1,11 @@
 import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { UserRepository } from 'codely/codely.data';
 import { User } from 'codely/codely.entities/data-models';
-import { HttpStatus, Injectable, UnprocessableEntityException } from '@nestjs/common';
+import {
+  HttpStatus,
+  Injectable,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { UserCreatedEvent } from 'codely/codely.entities/events';
 import { AuthProvidersEnum, StatusEnum } from 'codely/codely.entities/enums';
 import { JwtService } from '@nestjs/jwt';
@@ -16,16 +20,20 @@ import { NullableType } from '@app/core/utils';
 
 @Injectable()
 @CommandHandler(ValidateSocialLoginCommand)
-export class ValidateSocialLoginCommandHandler implements ICommandHandler<ValidateSocialLoginCommand> {
+export class ValidateSocialLoginCommandHandler
+  implements ICommandHandler<ValidateSocialLoginCommand>
+{
   constructor(
     private readonly userRepository: UserRepository,
     private eventBus: EventBus,
     private jwtService: JwtService,
-    private mailService: AuthMailService, 
-    private configService: Configuration
+    private mailService: AuthMailService,
+    private configService: Configuration,
   ) {}
 
-  async execute(command: ValidateSocialLoginCommand): Promise<LoginResponseDto> {
+  async execute(
+    command: ValidateSocialLoginCommand,
+  ): Promise<LoginResponseDto> {
     let user: NullableType<User> = null;
     const socialEmail = command.socialData.email?.toLowerCase();
     let userByEmail: NullableType<User> = null;
@@ -35,7 +43,10 @@ export class ValidateSocialLoginCommandHandler implements ICommandHandler<Valida
     }
 
     if (command.socialData.id) {
-      user = await this.userRepository.findBySocialIdAndProvider(command.socialData.id, command.authProvider);
+      user = await this.userRepository.findBySocialIdAndProvider(
+        command.socialData.id,
+        command.authProvider,
+      );
     }
 
     if (user) {
@@ -46,7 +57,6 @@ export class ValidateSocialLoginCommandHandler implements ICommandHandler<Valida
     } else if (userByEmail) {
       user = userByEmail;
     } else if (command.socialData.id) {
-
       user = await this.userRepository.create({
         id: uuid(),
         email: socialEmail ?? null,
@@ -55,9 +65,9 @@ export class ValidateSocialLoginCommandHandler implements ICommandHandler<Valida
         socialId: command.socialData.id,
         provider: command.authProvider,
         statusId: StatusEnum.active,
-      });
+      } as any);
 
-      user = await this.userRepository.findOne({id: user.id});
+      user = await this.userRepository.findById(user.id);
     }
 
     if (!user) {
@@ -97,14 +107,16 @@ export class ValidateSocialLoginCommandHandler implements ICommandHandler<Valida
     role: string;
     hash: string;
   }) {
-    const tokenExpiresIn = parseInt(this.configService.auth().AUTH_JWT_TOKEN_EXPIRES_IN);
+    const tokenExpiresIn = parseInt(
+      this.configService.auth().AUTH_JWT_TOKEN_EXPIRES_IN,
+    );
     const tokenExpires = Date.now() + tokenExpiresIn * 60 * 1000;
 
     const [token, refreshToken] = await Promise.all([
       await this.jwtService.signAsync(
         {
           id: data.id,
-          role: data.role
+          role: data.role,
         },
         {
           secret: this.configService.auth().AUTH_JWT_SECRET,

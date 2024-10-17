@@ -3,53 +3,71 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class Configuration {
-  constructor(private configService: ConfigService){}
+  constructor(private configService: ConfigService) {}
 
   app(): {
-    frontendDomain: string,
-    workingDirectory: string,
-    appName: string
+    frontendDomain: string;
+    workingDirectory: string;
+    appName: string;
   } {
     return {
       frontendDomain: this.configService.get<string>('APP.FRONTEND_DOMAIN'),
       workingDirectory: process.env.PWD || process.cwd(),
-      appName: this.configService.get<string>('APP.NAME')
+      appName: this.configService.get<string>('APP.NAME'),
     };
   }
 
   auth(): {
-    AUTH_CONFIRM_EMAIL_SECRET: string,
-    AUTH_CONFIRM_EMAIL_TOKEN_EXPIRES_IN: string,
-    AUTH_JWT_TOKEN_EXPIRES_IN: string,
-    AUTH_JWT_SECRET: string,
-    AUTH_REFRESH_SECRET: string,
-    AUTH_REFRESH_TOKEN_EXPIRES_IN: string
+    AUTH_CONFIRM_EMAIL_SECRET: string;
+    AUTH_CONFIRM_EMAIL_TOKEN_EXPIRES_IN: string;
+    AUTH_JWT_TOKEN_EXPIRES_IN: string;
+    AUTH_JWT_SECRET: string;
+    AUTH_REFRESH_SECRET: string;
+    AUTH_REFRESH_TOKEN_EXPIRES_IN: string;
+    AUTH_FORGOT_TOKEN_EXPIRES_IN: number;
+    AUTH_FORGOT_SECRET: string;
   } {
     return {
-      AUTH_CONFIRM_EMAIL_SECRET: this.configService.get<string>('AUTH_CONFIRM_EMAIL_SECRET'),
-      AUTH_CONFIRM_EMAIL_TOKEN_EXPIRES_IN: this.configService.get<string>('AUTH_CONFIRM_EMAIL_TOKEN_EXPIRES_IN'),
-      AUTH_JWT_TOKEN_EXPIRES_IN: this.configService.get<string>('AUTH_JWT_TOKEN_EXPIRES_IN'),
+      AUTH_CONFIRM_EMAIL_SECRET: this.configService.get<string>(
+        'AUTH_CONFIRM_EMAIL_SECRET',
+      ),
+      AUTH_CONFIRM_EMAIL_TOKEN_EXPIRES_IN: this.configService.get<string>(
+        'AUTH_CONFIRM_EMAIL_TOKEN_EXPIRES_IN',
+      ),
+      AUTH_JWT_TOKEN_EXPIRES_IN: this.configService.get<string>(
+        'AUTH_JWT_TOKEN_EXPIRES_IN',
+      ),
       AUTH_JWT_SECRET: this.configService.get<string>('AUTH_JWT_SECRET'),
-      AUTH_REFRESH_SECRET: this.configService.get<string>('AUTH_REFRESH_SECRET'),
-      AUTH_REFRESH_TOKEN_EXPIRES_IN: this.configService.get<string>('AUTH_REFRESH_TOKEN_EXPIRES_IN')
+      AUTH_REFRESH_SECRET: this.configService.get<string>(
+        'AUTH_REFRESH_SECRET',
+      ),
+      AUTH_REFRESH_TOKEN_EXPIRES_IN: this.configService.get<string>(
+        'AUTH_REFRESH_TOKEN_EXPIRES_IN',
+      ),
+      AUTH_FORGOT_TOKEN_EXPIRES_IN: this.configService.get<number>(
+        'AUTH_FORGOT_TOKEN_EXPIRES_IN',
+      ),
+      AUTH_FORGOT_SECRET: this.configService.get<string>('AUTH_FORGOT_SECRET'),
     };
   }
 
   google(): {
     GOOGLE_CLIENT_ID: string;
     GOOGLE_CLIENT_SECRET: string;
-  }{
+  } {
     return {
       GOOGLE_CLIENT_ID: this.configService.get<string>('GOOGLE_CLIENT_ID'),
-      GOOGLE_CLIENT_SECRET: this.configService.get<string>('GOOGLE_CLIENT_SECRET'),
-    }
+      GOOGLE_CLIENT_SECRET: this.configService.get<string>(
+        'GOOGLE_CLIENT_SECRET',
+      ),
+    };
   }
 
   apple(): {
     APPLE_APP_AUDIENCE: string;
-  }{
+  } {
     return {
-      APPLE_APP_AUDIENCE: this.configService.get<string>('APPLE_APP_AUDIENCE')
-    }
+      APPLE_APP_AUDIENCE: this.configService.get<string>('APPLE_APP_AUDIENCE'),
+    };
   }
 }

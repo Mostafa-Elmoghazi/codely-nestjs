@@ -3,18 +3,18 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class Configuration {
-  constructor(private configService: ConfigService){}
+  constructor(private configService: ConfigService) {}
 
   mail(): {
-    host: string,
-    defaultName: string,
-    defaultEmail: string,
-    ignoreTls: boolean,
-    requireTls: boolean,
-    secure: boolean,
-    user: string,
-    password: string,
-    port: number
+    host: string;
+    defaultName: string;
+    defaultEmail: string;
+    ignoreTls: boolean;
+    requireTls: boolean;
+    secure: boolean;
+    user: string;
+    password: string;
+    port: number;
   } {
     return {
       host: this.configService.get<string>('MAIL.HOST'),
@@ -25,7 +25,7 @@ export class Configuration {
       secure: this.configService.get<boolean>('MAIL.SECURE'),
       user: this.configService.get<string>('MAIL.USER'),
       password: this.configService.get<string>('MAIL.PASSWORD'),
-      port: this.configService.get<number>('MAIL.PORT')
-    }
+      port: this.configService.get<number>('MAIL.PORT'),
+    };
   }
 }

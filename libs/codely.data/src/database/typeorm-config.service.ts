@@ -6,7 +6,7 @@ import { User } from 'codely/codely.entities/data-models';
 @Injectable()
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
   constructor(private configService: ConfigService) {
-    console.log("ServDIR", __dirname)
+    console.log('ServDIR', __dirname);
   }
 
   createTypeOrmOptions(): TypeOrmModuleOptions {

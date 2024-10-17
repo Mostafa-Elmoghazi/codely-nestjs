@@ -14,7 +14,7 @@ export abstract class BaseMongoRepository<TEntity, TSchema>
   implements BaseMongoRepositoryInterface<TEntity>
 {
   constructor(
-    @InjectModel('SchemaName') private readonly schemaModel: Model<TSchema>,
+    @InjectModel('SchemaName') protected readonly schemaModel: Model<TSchema>,
     private readonly mapToEntity: (schema: TSchema) => TEntity,
     private readonly mapToSchema: (entity: TEntity) => TSchema,
   ) {}
@@ -22,7 +22,8 @@ export abstract class BaseMongoRepository<TEntity, TSchema>
   async create(entity: TEntity): Promise<TEntity> {
     const schemaInstance = new this.schemaModel(this.mapToSchema(entity));
     const savedSchema = await schemaInstance.save();
-    return this.mapToEntity(savedSchema.toObject() as TSchema);
+    const schemaObj = savedSchema.toObject() as any;
+    return this.mapToEntity({ _id: schemaObj._id, _doc: schemaObj } as any);
   }
 
   async findById(id: string): Promise<TEntity | null> {

@@ -1,4 +1,4 @@
-import { ApiSecurity } from "@nestjs/swagger";
+import { ApiSecurity } from '@nestjs/swagger';
 
 @ApiSecurity('language')
 export class BaseController {}

@@ -4,3 +4,5 @@ export * from './get-google-profile/get-google-profile.query';
 export * from './get-google-profile/get-google-profile.handler';
 export * from './get-apple-profile/get-apple-profile.query';
 export * from './get-apple-profile/get-apple-profile.handler';
+export * from './get-user-profile/get-user-profile.query';
+export * from './get-user-profile/get-user-profile.handler';

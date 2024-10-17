@@ -2,7 +2,7 @@ import { User } from 'codely/codely.entities/data-models';
 import 'reflect-metadata';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
-console.log("DIR ", __dirname)
+console.log('DIR ', __dirname);
 
 export const AppDataSource = new DataSource({
   type: 'postgres',

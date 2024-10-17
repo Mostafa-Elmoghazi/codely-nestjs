@@ -1,78 +1,101 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 import { Exclude, Expose } from 'class-transformer';
-import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
+import { BaseEntity } from './base.entity';
+import { ApiResponseProperty } from '@nestjs/swagger';
+import { BaseDocument } from './base.document';
 
-@Entity('users')
-export class User {
-    @PrimaryColumn('uuid')
-    id: string;
-
-    @Column({ type: 'varchar', length: 100 })
-    firstName: string;
-
-    @Column({ type: 'varchar', length: 100 })
-    lastName: string;
-
-    @Column({ type: 'varchar', length: 250, nullable: true })
-    email: string;
-
-    @Column({ type: 'varchar', length: 20, nullable: true })
-    phoneNumber: string;
-
-    @Column({ type: 'varchar', length: 100, nullable: true })
-    deviceId: string;
-
-    @Expose({ groups: ['me', 'admin'] })
-    @Exclude({ toPlainOnly: true })
-    @Column({ type: 'varchar', length: 300, nullable: true })
-    password: string;
-
-    @Column({ type: 'varchar', length: 100, nullable: true })
-    emailVerificationToken: string;
-
-    @Expose({ groups: ['me', 'admin'] })
-    @Column({ type: 'boolean', nullable: true })
-    isEmailVerified: boolean;
-
-    @Expose({ groups: ['me', 'admin'] })
-    @Column({ type: 'varchar', length: 50, nullable: true })
-    phoneVerificationCode: string;
-
-    @Expose({ groups: ['me', 'admin'] })
-    @Column({ type: 'boolean', nullable: true })
-    isPhoneVerified: boolean;
-
-    @Column({ type: 'smallint', nullable: true })
-    countryId: number;
-
-    @Column({ type: 'varchar', length: 100, nullable: true })
-    city: string;
-
-    @Expose({ groups: ['me', 'admin'] })
-    @Column({ type: 'varchar', length: 100, nullable: true })
-    socialId: string;
-
-    @Expose({ groups: ['me', 'admin'] })
-    @Column({ type: 'varchar', nullable: true })
-    provider: string;
-
-    @Column({ type: 'varchar', length: 250, nullable: true })
-    photoUrl: string;
-
-    @Column({ type: 'smallint', nullable: true })
-    availabilityStatusId: number;
-
-    @Column({ type: 'smallint', nullable: true })
-    statusId: number;
-
-    @Column({ type: 'varchar', length: 300, nullable: true })
-    bio: string;
-
-    @CreateDateColumn({ type: 'timestamp' })
-    createdAt: Date;
-
-    @UpdateDateColumn({ type: 'timestamp', nullable: true })
-    updatedAt: Date;
-
-    @DeleteDateColumn({ type: 'timestamp', nullable: true })
-    deletedAt: Date;
+export class User extends BaseEntity {
+  constructor() {
+    super();
+  }
+  public firstName: string;
+  public lastName: string;
+  @Expose({ groups: ['me', 'admin'] })
+  public email: string;
+  @Exclude({ toPlainOnly: true })
+  public password: string;
+  public countryId: number;
+  public city: string;
+  @Expose({ groups: ['me', 'admin'] })
+  public socialId: string;
+  @Expose({ groups: ['me', 'admin'] })
+  public provider: string;
+  public photoUrl: string;
+  public statusId: number;
+  public bio: string;
+  public createdAt: Date;
+  public updatedAt: Date;
+  public deletedAt: Date;
 }
+@Schema({
+  collection: 'users',
+  timestamps: true,
+  toJSON: {
+    virtuals: true,
+    getters: true,
+  },
+})
+export class UserSchema extends BaseDocument {
+  @Prop({ required: true })
+  firstName: string;
+
+  @Prop({ required: true })
+  lastName: string;
+
+  @ApiResponseProperty({
+    type: String,
+    example: 'john.doe@example.com',
+  })
+  @Expose({ groups: ['me', 'admin'], toPlainOnly: true })
+  @Prop({
+    type: String,
+    unique: true,
+  })
+  email: string;
+
+  @Exclude({ toPlainOnly: true })
+  @Prop()
+  password: string;
+
+  @Prop({ required: false })
+  countryId: number;
+
+  @Prop({ required: false })
+  city: string;
+
+  @ApiResponseProperty({
+    type: String,
+    example: '1234567890',
+  })
+  @Expose({ groups: ['me', 'admin'], toPlainOnly: true })
+  socialId: string;
+
+  @ApiResponseProperty({
+    type: String,
+    example: 'email',
+  })
+  @Expose({ groups: ['me', 'admin'], toPlainOnly: true })
+  @Prop({ required: true })
+  provider: string;
+
+  @Prop({ required: false })
+  photoUrl: string;
+
+  @Prop({ required: true })
+  statusId: number;
+
+  @Prop({ required: false })
+  bio: string;
+
+  @Prop({ required: true, default: Date.now })
+  createdAt: Date;
+
+  @Prop({ required: false })
+  updatedAt: Date;
+
+  @Prop({ required: false })
+  deletedAt: Date;
+}
+export const UserSchemaFactory = SchemaFactory.createForClass(UserSchema);
+//UserSchemaFactory.index({ id: 1 }, { unique: true });
